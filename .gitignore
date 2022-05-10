@@ -5,3 +5,6 @@ lib
 tests/
 .envrc
 __pycache__
+.env
+.coverage
+.pytest_cache
