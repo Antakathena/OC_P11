@@ -8,3 +8,7 @@ __pycache__
 .env
 .coverage
 .pytest_cache
+.TODO
+.notes_Github
+.server_version_finale
+points.html
