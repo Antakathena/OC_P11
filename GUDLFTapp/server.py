@@ -6,8 +6,22 @@ from flask import Flask, render_template, request, redirect, flash, url_for
 def page_not_found(e):
     return render_template('404.html'), 404
 
+# Déplacé dans ./run.py :
+# def load_clubs():
+#         with open('GUDLFTapp/clubs.json') as c:
+#                 list_of_clubs = json.load(c)['clubs']
+#         return list_of_clubs
 
-def create_app(clubs_infos=None, competitions_infos=None, test_config=None):
+# def load_competitions():
+#         with open('GUDLFTapp/competitions.json') as comps:
+#                 list_of_competitions = json.load(comps)['competitions']
+#         return list_of_competitions
+
+# competitions = load_competitions()
+# clubs = load_clubs()
+
+
+def create_app(clubs, competitions, test_config=None):
     """Facilite les tests. App factory qui englobe toute l'app :
      https://flask.palletsprojects.com/en/2.1.x/patterns/appfactories/"""
     app = Flask(__name__)  # l'ajout de , instance_relative_config=True fait qu'il ne trouve plus config(?)
@@ -33,24 +47,24 @@ def create_app(clubs_infos=None, competitions_infos=None, test_config=None):
     # except OSError:
     #     pass
 
-    def load_clubs(clubs_infos):
-        if clubs_infos == None:
-            with open('GUDLFTapp/clubs.json') as c:
-                list_of_clubs = json.load(c)['clubs']
-        else:
-            list_of_clubs = clubs_infos
-        return list_of_clubs
+    # def load_clubs(clubs_infos):
+    #     if clubs_infos == None:
+    #         with open('GUDLFTapp/clubs.json') as c:
+    #             list_of_clubs = json.load(c)['clubs']
+    #     else:
+    #         list_of_clubs = clubs_infos
+    #     return list_of_clubs
 
-    def load_competitions(competitions_infos):
-        if competitions_infos == None:
-            with open('GUDLFTapp/competitions.json') as comps:
-                list_of_competitions = json.load(comps)['competitions']
-        else:
-            list_of_competitions = competitions_infos
-        return list_of_competitions
+    # def load_competitions(competitions_infos):
+    #     if competitions_infos == None:
+    #         with open('GUDLFTapp/competitions.json') as comps:
+    #             list_of_competitions = json.load(comps)['competitions']
+    #     else:
+    #         list_of_competitions = competitions_infos
+    #     return list_of_competitions
 
-    competitions = load_competitions(competitions_infos)
-    clubs = load_clubs(clubs_infos)
+    # competitions = load_competitions(competitions_infos)
+    # clubs = load_clubs(clubs_infos)
 
 
     @app.route('/')
