@@ -17,8 +17,8 @@ def create_app(clubs, competitions, test_config=None):
     # problème dû à la factory pour tester les routes, apparemment il faudrait user des blueprints :
     # si depuis __init__ : from app.main import bp as main_bp ou from . import main +
 
-    from . import server
-    app.register_blueprint(server.bp)
+    from .server import bp
+    app.register_blueprint(bp)
 
     app.register_error_handler(404, page_not_found)
 

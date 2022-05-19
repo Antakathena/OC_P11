@@ -48,7 +48,7 @@ def create_app(config_filename):
             club = [club for club in clubs if club['email'] == request.form['email']][0]
             return render_template('welcome.html', club=club, competitions=competitions)
         except IndexError:
-            # flash message : email pas bon et return index (login)
+            flash("Unknown Club, please try again")
             return redirect(url_for(index.__name__))
 
 
