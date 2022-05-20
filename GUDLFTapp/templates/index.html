@@ -3,14 +3,19 @@
 
 {% block main %}
     <h1>Welcome to the GUDLFT Registration Portal!</h1>
-    Please enter your secretary email to continue:
-    <form action="showSummary" method="post">
-        <label for="email">Email:</label>
-        <input type="email" name="email" id=""/>
-        <button type="submit">Enter</button>
-    </form>
-
+    <div class="content">
+        <p>Please enter your secretary email to continue:</p>
+        <form action="{{url_for('bp.show_summary')}}" method="post">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id=""/>
+            <button type="submit">Enter</button>
+        </form>
+    </div>
     <h2>Display Clubs Points Board :</h2>
-    <a href="{{url_for('bp.show_points_board')}}">Points Board</a><br>
+    <div class="content">
+        <button>
+        <a href="{{url_for('bp.show_points_board')}}">Points Board</a><br>
+        </button>
+    </div>
      <!--nb : avec url_for c'est le nom de la fonction qu'on indique (pas l'url)-->
 {% endblock %}

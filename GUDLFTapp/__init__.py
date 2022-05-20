@@ -28,15 +28,24 @@ def create_app(clubs, competitions, test_config=None):
     # je peux changer pour suivre : https://www.youtube.com/watch?v=6c_utRUzHG4
     # mais il faudrait mieux comprendre les concepts
 
-    app.config.from_mapping(
-         SECRET_KEY='development'
-    )
+    # app.config.from_mapping(
+    #     SECRET_KEY='development',
+    #     clubs=clubs,
+    #     competitions=competitions
+    # )
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('../config.py', silent=True)
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
+
+    app.config.update(
+        {
+            'clubs': clubs,
+            'competitions': competitions
+        }
+    )
 
     # ensure the instance folder exists
     try:
