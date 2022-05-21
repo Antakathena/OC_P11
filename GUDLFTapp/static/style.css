@@ -1,7 +1,7 @@
 html {
     font-family: sans-serif;
     background: #eee;
-    padding: 20%;
+    padding: 5% auto;
     margin: 2% auto;
 }
 
@@ -30,7 +30,7 @@ input {
     margin-left: auto;
     margin-right: auto;
     height: 2rem;
-    width: 80%;
+    width: 60%;
 }
 
 button {

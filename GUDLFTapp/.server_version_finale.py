@@ -29,24 +29,23 @@ def create_app(config_filename):
     competitions = load_competitions()
     clubs = load_clubs()
 
-
-    @app.route('/')
-    # CORRECTIF A FAIRE >>> ERROR : entering an unknown email crashes the app -> add try except
+    @bp.route('/')
+    # au lieu de @app.route('/'), changé pour tout
     def index():
-        """formulaire de login"""
-        # on pourrait le rebaptiser login?
-        try :
-            return render_template('index.html')
-        except:
+        """Accueil et invitation à se logger
+        NB : l'email entré est traité dans show_summary"""
+        return render_template('/index.html')
 
-            # flash-message 404
-
-
-    @app.route('/show-summary', methods=['POST'])
+    @bp.route('/show-summary', methods=['POST'])
+    # BUGFIX >>> ERROR : entering an unknown email crashes the app -> add try except
     def show_summary():
-        try : # try except pour tous les [0] ou créer fonction
-            club = [club for club in clubs if club['email'] == request.form['email']][0]
-            return render_template('welcome.html', club=club, competitions=competitions)
+        """calendrier des compétitions
+        Doit afficher le calendrier des compétitions et
+        le nombre de points du club connecté si l'email entré est bon
+        """
+        try:
+            club = [club for club in g.clubs if club['email'] == request.form['email']][0]
+            return render_template('/welcome.html', club=club, competitions=g.competitions)
         except IndexError:
             flash("Unknown Club, please try again")
             return redirect(url_for(index.__name__))
@@ -89,17 +88,21 @@ def create_app(config_filename):
             return render_template('welcome.html', club=club, competitions=competitions)
 
         # CORRECTIF : pas plus de place que de dispos dans la compet
+        if places_required > competition['numberOfPlaces']:
+            flash("There is not so many places available for this competition")
+            return render_template('welcome.html', club=club, competitions=competitions)
 
         # CORRECTIF A FAIRE >>> BUG : clubs should not be able to book more than their allowed points
         # si places_required > nbr de clubpoints : message "non pas possible"
-        if places_required > clubpoints :
+        necessary_points = places_required * 3
+        if necessary_points >= clubpoints :
             flash("According to your points, your club cannot book so many places")
             return render_template('welcome.html', club=club, competitions=competitions)
 
         # CORRECTIF A FAIRE >>> BUG : points update are not reflected
         # nombre de points = nombre de points - places required
         competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - places_required
-        club['points']= int(club['points']) - places_required
+        club['points']= int(club['points']) - places_required * 3
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
         #----------------------------------------------------------------------------------------------------------

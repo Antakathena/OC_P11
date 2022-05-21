@@ -2,7 +2,6 @@ bin
 include
 lib
 .Python
-tests/
 .envrc
 __pycache__
 .env
@@ -12,3 +11,5 @@ __pycache__
 .notes_Github
 .server_version_finale
 points.html
+functional
+performance

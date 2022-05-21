@@ -19,6 +19,7 @@ if __name__ == "__main__":
 
     app = create_app(clubs, competitions)
     print(app.url_map)
+    print(competitions)
     print(clubs)  # a retirer à la fin
     app.run(debug=True)  # change when debug is done
 
