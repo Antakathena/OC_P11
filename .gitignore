@@ -2,13 +2,15 @@ bin
 include
 lib
 .Python
-tests/
 .envrc
 __pycache__
 .env
 .coverage
-.pytest_cache
 .TODO
 .notes_Github
 .server_version_finale
 points.html
+README.md
+.pytest_cache
+functional
+performance
