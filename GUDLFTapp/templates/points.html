@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Clubs Points Board{% endblock %}
+
+{% block main %}
+    <h2>Clubs Points Board</h2>
+
+    {% with messages = get_flashed_messages()%}
+        {% if messages %}
+            <ul>
+           {% for message in messages %}
+                <li>{{message}}</li>
+           {% endfor %}
+            </ul>
+        {% endif%}
+
+        <ul>
+        {% for club in clubs %}
+            <li><h3>{{club['name']}}</h3><br />
+            Points available: {{club['points']}}</li>
+        {% endfor %}
+        </ul>
+
+    <br><h4>Return to index: <a href="{{url_for('bp.index')}}">Index</a><br></h4>
+    {%endwith%}
+{% endblock %}
