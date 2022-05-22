@@ -5,15 +5,6 @@
     <h2>Welcome, {{club['email']}} of {{club['name']}}</h2>
     <a href="{{url_for('bp.logout')}}">Logout</a><br>
 
-    {% with messages = get_flashed_messages()%}
-    {% if messages %}
-        <ul>
-       {% for message in messages %}
-            <li>{{message}}</li>
-        {% endfor %}
-       </ul>
-    {% endif%}
-
     <h4>Points available for {{club['name']}}: {{club['points']}}</h4>
 
     <h3>Competitions:</h3>
@@ -30,5 +21,5 @@
         <hr />
         {% endfor %}
     </ul>
-    {%endwith%}
+
 {% endblock %}

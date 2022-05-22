@@ -43,7 +43,7 @@ def show_summary():
         return render_template('/welcome.html', club=club, competitions=g.competitions)
     except IndexError:
         flash("Unknown Club, please try again")
-        return redirect(url_for(index.__name__))
+        return redirect(url_for('bp.index'))
 
 
 @bp.route('/book/<competition>/<club>')

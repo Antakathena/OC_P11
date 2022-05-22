@@ -1,5 +1,3 @@
-import pytest
-
 
 def test_should_status_code_ok(client, good_club, clubs):
     """
@@ -26,14 +24,13 @@ def test_find_club(client, clubs):
     assert club['name'] in data
 
 
-@pytest.mark.xfail(reason="debug not implemented")
-def test_email_unknown(client):
+def test_email_unknown(client, bad_club):
     """
     GIVEN an unknown club
     WHEN the club's email is given as input
     THEN check the email field is defined correctly,
     send an error message if the email is incorrect.
     """
-    response = client.post('/show-summary', data={"email": "unknown@test.com"})
-    assert response.status_code == 301  # redirection vers template
-    assert response.headers['Location'] == "/index"  # ou url_for(index)
+    response = client.post('/show-summary', data={'email': bad_club['email']})
+    assert response.status_code == 302  # redirection 302 FOUND
+    assert response.headers['Location'] == 'http://localhost/'  # (index)
