@@ -74,13 +74,22 @@ def test_limit_purchase_according_to_points(client, less_points_club, good_compe
 
 
 def test_reflect_purchase_on_points(client, good_club, good_competition):
-    """1 place = 3 points"""
-    required_places = 1
-    club_points = int(good_club['points']) - required_places*3
-    left_places_in_competition = int(good_competition['numberOfPlaces']) - required_places
+    """club_points - purchased places
+    1 place = 3 points. After purchasing places,
+    the club points should be diminished by the required places * 3
+     """
+    response = client.post(
+        '/purchase-places',
+        data={
+            'competition': good_competition['name'],
+            'club': good_club['name'],
+            'places': '2'
+        }
+    )
+    content = response.data.decode()
 
-    # 1 place = 3 points donc 13 (good club points) - 3 : club['points'] == "10"
-    assert club_points == 10
+    # 2 places = 6 points donc 13 (good club points) - 6 : club['points'] == "7"
+    assert "Points available for Simply Lift: 7" in content
 
-    # good_competition a 25 places disponibles - 1 : competition['numberOfPlaces']== "24"
-    assert left_places_in_competition == 24
+    # good_competition a 25 places disponibles - 2 : competition['numberOfPlaces']== "23"
+    assert "Number of Places: 23" in content
