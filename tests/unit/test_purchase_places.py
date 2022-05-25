@@ -59,6 +59,7 @@ def test_limit_purchase_to_available_places(client, good_club, few_places_compet
 
 @pytest.mark.xfail(reason="debug not implemented")
 def test_limit_purchase_according_to_points(client, less_points_club, good_competition):
+    """1 place = 3 points"""
     # CORRECTIF A FAIRE >>> BUG : clubs should not be able to book more than their allowed points
     response = client.post(
         '/purchase-places', data={
@@ -72,9 +73,14 @@ def test_limit_purchase_according_to_points(client, less_points_club, good_compe
         f'message given: impossible to book.'
 
 
-@pytest.mark.xfail(reason="debug not implemented")
-def test_reflect_purchase_on_points(good_club, good_competition):
-    club = good_club
-    competition = good_competition
-    assert club['points'] == "8"
-    assert competition['numberOfPlaces'] == "20"
+def test_reflect_purchase_on_points(client, good_club, good_competition):
+    """1 place = 3 points"""
+    required_places = 1
+    club_points = int(good_club['points']) - required_places*3
+    left_places_in_competition = int(good_competition['numberOfPlaces']) - required_places
+
+    # 1 place = 3 points donc 13 (good club points) - 3 : club['points'] == "10"
+    assert club_points == 10
+
+    # good_competition a 25 places disponibles - 1 : competition['numberOfPlaces']== "24"
+    assert left_places_in_competition == 24

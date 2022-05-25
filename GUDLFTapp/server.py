@@ -86,10 +86,20 @@ def purchase_places():
     Enfin,
     Les points et places disponibles doivent être modifiés en fonction de l'achat qui a été réalisé.
     """
-    competition = [c for c in g.competitions if c['name'] == request.form['competition']][0]
-    club = [c for c in g.clubs if c['name'] == request.form['club']][0]
-    places_required = int(request.form['places'])
+    # CORRECT >>> BUG : only allow places required >= 1, except value error
+    try:
+        competition = [c for c in g.competitions if c['name'] == request.form['competition']][0]
+        club = [c for c in g.clubs if c['name'] == request.form['club']][0]
+        places_required = int(request.form['places'])
+        if places_required < 1:
+            raise ValueError
+    except (ValueError, IndexError):
+        flash("Enter a number between 1 and your allowed possibility of booking (3 club-point = 1 place)")
+        return render_template('welcome.html', club=club, competitions=g.competitions)
+
+    # CORRECT >>> BUG : purchase not reflected by points update (1 place = 3 points)
     competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - places_required
+    club['points'] = int(club['points']) - places_required * 3
     flash('Great-booking complete!')
     return render_template('/welcome.html', club=club, competitions=g.competitions)
 
