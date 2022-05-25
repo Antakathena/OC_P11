@@ -12,16 +12,15 @@ def test_should_status_code_ok(client, good_club, good_competition):
         data={
             'competition': good_competition['name'],
             'club': good_club['name'],
-            'places': '5',
+            'places': '1',
         }
     )
     content = response.data.decode()
-    assert 'Great-booking complete' in content
-    assert response.status_code == 200
+    assert 'Great-booking complete!' in content, content
+    assert response.status_code == 200, content
 
 
-@pytest.mark.xfail(reason="not implemented")
-def test_limit_purchase_to_12places(client, good_club, good_competition):
+def test_limit_purchase_to_12places(client, many_points_club, good_competition):
     """
     GIVEN a connected user (club) and a booking just made
     WHEN the '/purchase-places' page is requested (POST)
@@ -32,55 +31,64 @@ def test_limit_purchase_to_12places(client, good_club, good_competition):
         '/purchase-places',
         data={
             'competition': good_competition['name'],
-            'club': good_club['name'],
+            'club': many_points_club['name'],
             "places": "13"
         }
     )
-    data = response.data.decode()  # on retire .decode() si on utilise b'
-    assert 'A club cannot use more than 12 points on a competition' in data
-    # b' = octets'
+    content = response.data.decode()  # on retire ".decode()" si on utilise b'(b' = octets')
+    assert 'A club cannot purchase more than 12 places in a competition' in content
 
 
-@pytest.mark.xfail(reason="debug not implemented")
 def test_limit_purchase_to_available_places(client, good_club, few_places_competition):
-    # CORRECTIF A FAIRE >>> BUG : clubs should not be able to book more than remaining places
+    """clubs should not be able to book more than remaining places"""
     response = client.post(
         '/purchase-places', data={
             'competition': few_places_competition['name'], 'club': good_club['name'], "places": "10"})
-    places_required = "10"
+    places_required = "3"
     available_places = few_places_competition['numberOfPlaces']
     total = int(available_places) - int(places_required)
-    data = response.data.decode()
+    content = response.data.decode()
     assert available_places < places_required, f'places disponibles :{available_places},demandées :{places_required},' \
                                                f' number of places - required places would be = {total}'
-    assert 'There is not so many places available for this competition' in data,\
+    assert 'There is not so many places available for this competition' in content,\
         f'message given: impossible to book.'
 
 
-@pytest.mark.xfail(reason="debug not implemented")
 def test_limit_purchase_according_to_points(client, less_points_club, good_competition):
-    """1 place = 3 points"""
-    # CORRECTIF A FAIRE >>> BUG : clubs should not be able to book more than their allowed points
+    """1 place = 3 points; clubs should not be able to book more than their allowed points"""
     response = client.post(
-        '/purchase-places', data={
-            'competition': good_competition['name'], 'club': less_points_club['name'], "places": "10"})
+        '/purchase-places',
+        data={
+            'competition': good_competition['name'],
+            'club': less_points_club['name'],
+            'places': '2'
+        }
+    )
     club_points = less_points_club['points']
-    places_required = "10"
-    total = int(club_points) - int(places_required)
-    data = response.data.decode()
-    assert club_points < places_required, f'le nombre de places demandées dépasse de {total} les points disponibles'
-    assert 'According to your points, your club cannot book so many places' in data, \
-        f'message given: impossible to book.'
+    places_required = "2"
+    total = int(club_points) - int(places_required)*3
+    content = response.data.decode()
+    assert 'According to your points, your club cannot book so many places' in content, \
+        f'message given: impossible to book, {total} points more needed than possessed.'
 
 
 def test_reflect_purchase_on_points(client, good_club, good_competition):
-    """1 place = 3 points"""
-    required_places = 1
-    club_points = int(good_club['points']) - required_places*3
-    left_places_in_competition = int(good_competition['numberOfPlaces']) - required_places
+    """club_points - purchased places
+    1 place = 3 points. After purchasing places,
+    the club points should be diminished by the required places * 3
+     """
+    response = client.post(
+        '/purchase-places',
+        data={
+            'competition': good_competition['name'],
+            'club': good_club['name'],
+            'places': '2'
+        }
+    )
+    content = response.data.decode()
 
-    # 1 place = 3 points donc 13 (good club points) - 3 : club['points'] == "10"
-    assert club_points == 10
+    # 2 places = 6 points donc 13 (good club points) - 6 : club['points'] == "7"
+    assert "Points available for Simply Lift: 7" in content
 
-    # good_competition a 25 places disponibles - 1 : competition['numberOfPlaces']== "24"
-    assert left_places_in_competition == 24
+    # good_competition a 25 places disponibles - 2 : competition['numberOfPlaces']== "23"
+    assert "Number of Places: 23" in content

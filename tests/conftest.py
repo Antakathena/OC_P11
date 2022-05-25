@@ -30,12 +30,21 @@ def good_club():
 
 @pytest.fixture
 def bad_club():
-    bad_club = {
+    club = {
         "name": "anonymus",
         "email": "noone@test.co",
         "points": "0"
     }
-    yield bad_club
+    yield club
+
+@pytest.fixture
+def many_points_club():
+    club = {
+        "name": "Tigers",
+        "email": "admin@tigers.com",
+        "points": "40"
+    }
+    yield club
 
 
 @pytest.fixture
@@ -65,6 +74,11 @@ def clubs():
             "name": "She Lifts",
             "email": "kate@shelifts.co.uk",
             "points": "12"
+        },
+        {
+            "name": "Tigers",
+            "email": "admin@tigers.com",
+            "points": "40"
         }
     ]
     yield clubs
@@ -122,6 +136,6 @@ def few_places_competition():
     competition = {
         "name": "Festival with few places",
         "date": "2023-03-27 10:00:00",
-        "numberOfPlaces": "8"
+        "numberOfPlaces": "2"
     }
     yield competition

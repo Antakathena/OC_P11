@@ -86,7 +86,7 @@ def purchase_places():
     Enfin,
     Les points et places disponibles doivent être modifiés en fonction de l'achat qui a été réalisé.
     """
-    # CORRECT >>> BUG : only allow places required >= 1, except value error
+    # CORRECTED >>> only allow places required >= 1, except value error
     try:
         competition = [c for c in g.competitions if c['name'] == request.form['competition']][0]
         club = [c for c in g.clubs if c['name'] == request.form['club']][0]
@@ -97,7 +97,24 @@ def purchase_places():
         flash("Enter a number between 1 and your allowed possibility of booking (3 club-point = 1 place)")
         return render_template('welcome.html', club=club, competitions=g.competitions)
 
-    # CORRECT >>> BUG : purchase not reflected by points update (1 place = 3 points)
+    # CORRECTED >>> clubs should not be able to book more than 12 places per competition
+    if places_required > 12:
+        flash("A club cannot purchase more than 12 places in a competition")
+        return render_template('welcome.html', club=club, competitions=g.competitions)
+
+    # CORRECTED >>> pas plus de place que de dispos dans la competition
+    if places_required > int(competition['numberOfPlaces']):
+        flash("There is not so many places available for this competition")
+        return render_template('welcome.html', club=club, competitions=g.competitions)
+
+    # CORRECTED >>> clubs should not be able to book more than their allowed points
+    necessary_points = places_required * 3
+    club_points = int(club['points'])
+    if necessary_points >= club_points:
+        flash("According to your points, your club cannot book so many places")
+        return render_template('welcome.html', club=club, competitions=g.competitions)
+
+    # CORRECTED >>> purchase not reflected by points update (1 place = 3 points)
     competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - places_required
     club['points'] = int(club['points']) - places_required * 3
     flash('Great-booking complete!')
