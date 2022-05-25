@@ -1,8 +1,5 @@
 import pytest
 from GUDLFTapp import create_app
-# package = GUDLFT
-# module = server
-# function = create_app
 
 
 @pytest.fixture
@@ -19,12 +16,6 @@ def client(app):
     # with flask_app.test_client() as test_client:
     # response = test_client.get('/index')
     return app.test_client()
-
-
-# ça je ne sais pas à quoi ça sert mais c'est dans la doc:
-@pytest.fixture()
-def runner(app):
-    return app.test_cli_runner()
 
 
 @pytest.fixture

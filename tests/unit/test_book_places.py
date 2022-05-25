@@ -1,4 +1,4 @@
-import pytest
+from datetime import datetime
 
 
 def test_should_status_code_ok(client, good_club, good_competition):
@@ -27,7 +27,6 @@ def test_find_club_and_competition(client, good_club, good_competition):
     assert competition['name'] in data
 
 
-@pytest.mark.xfail(reason="not implemented")
 def test_no_booking_for_past_competitions(client, good_club, past_competition):
     """
     GIVEN a connected user (club) and a competition
@@ -35,5 +34,5 @@ def test_no_booking_for_past_competitions(client, good_club, past_competition):
     THEN show a message like "no booking for past competitions"
     """
     response = client.get(f"/book/{past_competition['name']}/{good_club['name']}")
-    data = response.data.decode()
-    assert 'This competition is past' in data
+    assert response.status_code == 302  # redirection 302 FOUND
+    assert response.headers['Location'] == 'http://localhost/'  # (index)

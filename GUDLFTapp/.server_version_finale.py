@@ -60,7 +60,7 @@ def create_app(config_filename):
         # if date de la competition < now : message d'erreur explicite-------------------------------------------------
         if found_competition['date'] < datetime.today():
             flash("This competition is past")
-            return redirect(url_for(show_summary.__name__))
+            return redirect(url_for("bp.show_summary"))
         elif found_club and found_competition:
             return render_template('booking.html', club=found_club, competition=found_competition)
         else:
