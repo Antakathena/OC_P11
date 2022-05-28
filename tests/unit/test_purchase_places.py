@@ -39,6 +39,24 @@ def test_limit_purchase_to_12places(client, many_points_club, good_competition):
     assert 'A club cannot purchase more than 12 places in a competition' in content
 
 
+def test_limit_value(client, good_club, good_competition):
+    """
+    GIVEN a connected user (club) and a booking just made
+    WHEN the user tries to purchase 0 or fewer places
+    THEN an error message appears
+    """
+    response = client.post(
+        '/purchase-places',
+        data={
+            'competition': good_competition['name'],
+            'club': good_club['name'],
+            "places": "0"
+        }
+    )
+    content = response.data.decode()  # on retire ".decode()" si on utilise b'(b' = octets')
+    assert 'Enter a number between 1 and your allowed possibility of booking (3 club-point = 1 place)' in content
+
+
 def test_limit_purchase_to_available_places(client, good_club, few_places_competition):
     """clubs should not be able to book more than remaining places"""
     response = client.post(
@@ -90,5 +108,5 @@ def test_reflect_purchase_on_points(client, good_club, good_competition):
     # 2 places = 6 points donc 13 (good club points) - 6 : club['points'] == "7"
     assert "Points available for Simply Lift: 7" in content
 
-    # good_competition a 25 places disponibles - 2 : competition['numberOfPlaces']== "23"
+    # good_competition has 25 places available - 2 : competition['numberOfPlaces']== "23"
     assert "Number of Places: 23" in content

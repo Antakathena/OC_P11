@@ -4,6 +4,7 @@ lib
 .Python
 .envrc
 .env
+windowsenv
 __pycache__
 
 .coverage
@@ -16,7 +17,5 @@ performance
 .TODO
 .notes_Github
 
-
 # hors sujet pour la branche de correctif
-.server_version_finale
 README.md
