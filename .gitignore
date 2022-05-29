@@ -11,7 +11,7 @@ __pycache__
 htmlcov
 .pytest_cache
 functional
-performance
+
 
 # notes perso
 .TODO
