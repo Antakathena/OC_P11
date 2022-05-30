@@ -128,5 +128,5 @@ def show_points_board():
 
 @bp.route('/logout')
 def logout():
-    """Déconnection, redirection vers l'accueil"""
+    """Déconnexion, redirection vers l'accueil"""
     return redirect(url_for('.index'))
